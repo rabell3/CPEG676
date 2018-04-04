@@ -4,6 +4,7 @@
 settings.json
 .pylintrc
 a.out
+*.bin
 *.pdf
 *.png
 *.jpg
