@@ -3,6 +3,7 @@
 *student*
 settings.json
 .pylintrc
+a.out
 *.pdf
 *.png
 *.jpg
