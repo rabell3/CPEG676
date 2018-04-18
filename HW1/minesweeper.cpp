@@ -71,10 +71,12 @@ void MinesweepGameboard::createGameboard(int width, int height, int mines, DIFFI
     dim_y = height;
     cMines = mines;
     difficulty = level;
+    gameArray[width,height];
 }
 void MinesweepGameboard::printGameboard()
 {
     printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", dim_x, dim_y, cMines, getDifficulty());
+    printf("gameArray is: %d bytes\n",sizeof(gameArray));
 }
 
 char* MinesweepGameboard::getDifficulty()
@@ -104,8 +106,6 @@ main(){
 
 
     printf("HW1: CLI Minesweeper - RABIII\n");
-//    MinesweepGameboard msGame;
-
     printf("Choose level of difficulty (E)asy, (M)edium, (H)ard): ");
     cin >> level;
     switch (level)
@@ -116,7 +116,6 @@ main(){
             thisY = 6;
             thisMines = 20;
             thisDifficulty = Easy;
-//            MinesweepGameboard msGame(10,6,10,Easy);
             break;
         case 'M':
             cout << "Generating a Medium gameboard...\n";
@@ -124,7 +123,6 @@ main(){
             thisY = 12;
             thisMines = 20;
             thisDifficulty = Medium;
-//            MinesweepGameboard msGame(20,12,20,Medium);
             break;
         case 'H':
             cout << "Generating a Difficult gameboard...\n";
@@ -132,7 +130,6 @@ main(){
             thisY = 18;
             thisMines = 30;
             thisDifficulty = Hard;
-//            MinesweepGameboard msGame(30,18,30,Hard);
             break;
         default:
             cout << "This shouldn't happen\n";
