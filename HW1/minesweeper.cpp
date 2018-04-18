@@ -13,6 +13,7 @@ class MinesweepGameboard
         int getXdim(int x) { return dim_x; }
         int getydim(int y) { return dim_y; }
         void printGameboard();
+        char* getDifficulty();
         ~MinesweepGameboard();
 
     private:
@@ -62,6 +63,30 @@ void MinesweepGameboard::createGameboard(int width, int height, int mines, DIFFI
     cMines = mines;
     difficulty = level;
 }
+void MinesweepGameboard::printGameboard()
+{
+    printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", dim_x, dim_y, cMines, getDifficulty());
+}
+
+char* MinesweepGameboard::getDifficulty()
+{
+    switch (difficulty)
+    {
+        case Easy:
+            return "Easy";
+            break;
+        case Medium:
+            return "Medium";
+            break;
+        case Hard:
+            return "Hard";
+            break;
+        default:
+            // This shouldn't happen
+            return "broke";
+            break;
+    }
+}
 
 main(){
     char level;
@@ -90,6 +115,6 @@ main(){
             break;
     }
 
-        
+    msGame.printGameboard();
     return 0;
 }
