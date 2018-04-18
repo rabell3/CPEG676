@@ -9,6 +9,7 @@ class MinesweepGameboard
 {
     public:
         MinesweepGameboard();
+        MinesweepGameboard(int x, int y, int mines, DIFFICULTY level);
         void createGameboard(int x, int y, int mines, DIFFICULTY level);  // should meet requirement 1
         int getXdim(int x) { return dim_x; }
         int getydim(int y) { return dim_y; }
@@ -23,16 +24,24 @@ class MinesweepGameboard
         int dim_x;
         int dim_y;
         int cMines;
+        int gameArray[];
 };
 
 // Constructor
 MinesweepGameboard::MinesweepGameboard()
 {
-    cout << "Minesweeper object initialized.\n";
+    cout << "Basic Minesweeper object initialized.\n";
     dim_x = 0;
     dim_y = 0;
     cMines = 0;
     difficulty = Easy;
+}
+
+// Constructor
+MinesweepGameboard::MinesweepGameboard(int x, int y, int mines, DIFFICULTY level)
+{
+    createGameboard(x, y, mines, level);
+    cout << "Proper Minesweeper object initialized.\n";
 }
 
 // Destructor
@@ -90,9 +99,12 @@ char* MinesweepGameboard::getDifficulty()
 
 main(){
     char level;
+    int thisX=0, thisY=0, thisMines=0;
+    DIFFICULTY thisDifficulty;
+
 
     printf("HW1: CLI Minesweeper - RABIII\n");
-    MinesweepGameboard msGame;
+//    MinesweepGameboard msGame;
 
     printf("Choose level of difficulty (E)asy, (M)edium, (H)ard): ");
     cin >> level;
@@ -100,21 +112,33 @@ main(){
     {
         case 'E':
             cout << "Generating an Easy gameboard...\n";
-            msGame.createGameboard(10,6,10,Easy);
+            thisX = 10;
+            thisY = 6;
+            thisMines = 20;
+            thisDifficulty = Easy;
+//            MinesweepGameboard msGame(10,6,10,Easy);
             break;
         case 'M':
             cout << "Generating a Medium gameboard...\n";
-            msGame.createGameboard(20,12,20,Medium);
+            thisX = 20;
+            thisY = 12;
+            thisMines = 20;
+            thisDifficulty = Medium;
+//            MinesweepGameboard msGame(20,12,20,Medium);
             break;
         case 'H':
             cout << "Generating a Difficult gameboard...\n";
-            msGame.createGameboard(30,18,30,Hard);
+            thisX = 30;
+            thisY = 18;
+            thisMines = 30;
+            thisDifficulty = Hard;
+//            MinesweepGameboard msGame(30,18,30,Hard);
             break;
         default:
             cout << "This shouldn't happen\n";
             break;
     }
-
+    MinesweepGameboard msGame(thisX, thisY, thisMines, thisDifficulty);
     msGame.printGameboard();
     return 0;
 }
