@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string>
 #include <time.h>
+#include <curses.h>
+
 using namespace std;
 
 enum DIFFICULTY { Easy, Medium, Hard };
@@ -25,7 +27,7 @@ class MinesweepGameboard
         void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
         unsigned short getWidth(unsigned short x) { return width; }
         unsigned short getHeight(unsigned short y) { return height; }
-        cellStatus getXYval(unsigned short x, unsigned short y);
+//        cellStatus getXYval(unsigned short x, unsigned short y);
         void printGameboard();
         void printGameboardStats();
         char* getDifficulty();
@@ -118,27 +120,31 @@ void MinesweepGameboard::createGameboard(unsigned short inwidth, unsigned short 
 void MinesweepGameboard::printGameboardStats()
 {
     printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", width, height, cMines, getDifficulty());
-    printf("gameArray is: %d bytes\n",sizeof(gameArray));
+    printf("gameArray is: %d bytes\n",sizeof(*gameArray));
 }
 void MinesweepGameboard::printGameboard()
 {
     printGameboardStats();
 
     for (int i=0; i<height; i++)
+    {
         for (int j=0; j<width; j++)
         {
 //            int val = getXYval(i,j);
 //            printf("Val: %d", val);
-            printf("Hello!\n");
+            printf("Hello!\t");
         }
     printf("\n");
+    }
     return;
 }
 
+/*
 cellStatus MinesweepGameboard::getXYval(unsigned short x, unsigned short y)
 { 
     return { x, y, isOpen(), isFlagged(), hasMine(), getNeighbors() };
 }
+*/
 
 bool MinesweepGameboard::isOpen()
 {
@@ -166,6 +172,7 @@ char* MinesweepGameboard::getDifficulty()
 }
 
 main(){
+//    initscr();  // Disabled for now
     char level;
     unsigned short thisX=0, thisY=0, thisMines=0;
     DIFFICULTY thisDifficulty;
@@ -203,5 +210,6 @@ main(){
     }
     MinesweepGameboard msGame(thisX, thisY, thisDifficulty);
     msGame.printGameboard();
+//    endwin(); // Disabled for now.
     return 0;
 }
