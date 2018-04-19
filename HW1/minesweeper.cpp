@@ -6,20 +6,33 @@
 using namespace std;
 
 enum DIFFICULTY { Easy, Medium, Hard };
+struct cellStatus
+{
+    unsigned short xCoord;
+    unsigned short yCoord;
+    bool isOpened = false;
+    bool hasFlag = false;
+    bool hasMine = false;
+    unsigned short neighborMines;
+};
 
 class MinesweepGameboard
 {
     public:
         MinesweepGameboard();
         MinesweepGameboard(unsigned short x, unsigned short y, DIFFICULTY level);
+        ~MinesweepGameboard();
         void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
         unsigned short getWidth(unsigned short x) { return width; }
         unsigned short getHeight(unsigned short y) { return height; }
-        unsigned short getXYval(unsigned short x, unsigned short y) { return gameArray[x][y]; }
+        cellStatus getXYval(unsigned short x, unsigned short y);
         void printGameboard();
         void printGameboardStats();
         char* getDifficulty();
-        ~MinesweepGameboard();
+        bool isOpen();
+        bool isFlagged();
+        bool hasMine();
+        int getNeighbors();
 
     private:
 //        void setDimensions(int x, int y);
@@ -28,7 +41,7 @@ class MinesweepGameboard
         unsigned short width;
         unsigned short height;
         unsigned short cMines;
-        unsigned short gameArray[0][0];
+        int gameArray[0][0];
 };
 
 // Constructor
@@ -114,11 +127,22 @@ void MinesweepGameboard::printGameboard()
     for (int i=0; i<height; i++)
         for (int j=0; j<width; j++)
         {
-            int val = getXYval(i,j);
-            printf("Val: %d", val);
+//            int val = getXYval(i,j);
+//            printf("Val: %d", val);
+            printf("Hello!\n");
         }
     printf("\n");
     return;
+}
+
+cellStatus MinesweepGameboard::getXYval(unsigned short x, unsigned short y)
+{ 
+    return { x, y, isOpen(), isFlagged(), hasMine(), getNeighbors() };
+}
+
+bool MinesweepGameboard::isOpen()
+{
+    return true;
 }
 
 char* MinesweepGameboard::getDifficulty()
