@@ -11,36 +11,38 @@ class MinesweepGameboard
 {
     public:
         MinesweepGameboard();
-        MinesweepGameboard(int x, int y, DIFFICULTY level);
-        void createGameboard(int x, int y, DIFFICULTY level);  // should meet requirement 1
-        int getXdim(int x) { return dim_x; }
-        int getydim(int y) { return dim_y; }
+        MinesweepGameboard(unsigned short x, unsigned short y, DIFFICULTY level);
+        void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
+        unsigned short getWidth(unsigned short x) { return width; }
+        unsigned short getHeight(unsigned short y) { return height; }
+        unsigned short getXYval(unsigned short x, unsigned short y) { return gameArray[x][y]; }
         void printGameboard();
+        void printGameboardStats();
         char* getDifficulty();
         ~MinesweepGameboard();
 
     private:
 //        void setDimensions(int x, int y);
-        int setMines(DIFFICULTY difficulty);
+        unsigned short setMines(DIFFICULTY difficulty);
         DIFFICULTY difficulty;
-        int dim_x;
-        int dim_y;
-        int cMines;
-        int gameArray[];
+        unsigned short width;
+        unsigned short height;
+        unsigned short cMines;
+        unsigned short gameArray[0][0];
 };
 
 // Constructor
 MinesweepGameboard::MinesweepGameboard()
 {
     cout << "Basic Minesweeper object initialized.\n";
-    dim_x = 0;
-    dim_y = 0;
+    width = 0;
+    height = 0;
     cMines = 0;
     difficulty = Easy;
 }
 
 // Constructor
-MinesweepGameboard::MinesweepGameboard(int x, int y, DIFFICULTY level)
+MinesweepGameboard::MinesweepGameboard(unsigned short x, unsigned short y, DIFFICULTY level)
 {
     createGameboard(x, y, level);
     cout << "Proper Minesweeper object initialized.\n";
@@ -56,16 +58,16 @@ MinesweepGameboard::~MinesweepGameboard()
 void MinesweepGameboard::setDimensions(int x, int y)
 {
     cout << "Setting dimensions of gameboard...\n";
-    dim_x = x;
-    dim_y = y;
+    width = x;
+    height = y;
 }
 */
-int MinesweepGameboard::setMines(DIFFICULTY difficulty)
+unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
 {
     srand (time(NULL));
-    int easyMines = rand() % 10 + 1;
-    int mediumMines = rand() % 20 + 11;
-    int hardMines = rand() % 30 + 21;
+    unsigned short easyMines = rand() % 10 + 1;
+    unsigned short mediumMines = rand() % 20 + 11;
+    unsigned short hardMines = rand() % 30 + 21;
 
     switch (difficulty)
     {
@@ -85,21 +87,38 @@ int MinesweepGameboard::setMines(DIFFICULTY difficulty)
     }
 }
 
-void MinesweepGameboard::createGameboard(int width, int height, DIFFICULTY level)
+void MinesweepGameboard::createGameboard(unsigned short inwidth, unsigned short inheight, DIFFICULTY inlevel)
 {
     cout << "Gameboard created.\n";
-    dim_x = width;
-    dim_y = height;
-    difficulty = level;
+    width = inwidth;
+    height = inheight;
+    difficulty = inlevel;
     cMines = setMines(difficulty);
+    unsigned short gameArray[width][height];
 
-    
-    gameArray[width,height];
+    for (int i=0; i<height; i++)
+        for (int j=0; j<width; j++)
+        {
+            gameArray[i][j]=(i+1)*(j+1);
+        }
+}
+void MinesweepGameboard::printGameboardStats()
+{
+    printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", width, height, cMines, getDifficulty());
+    printf("gameArray is: %d bytes\n",sizeof(gameArray));
 }
 void MinesweepGameboard::printGameboard()
 {
-    printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", dim_x, dim_y, cMines, getDifficulty());
-    printf("gameArray is: %d bytes\n",sizeof(gameArray));
+    printGameboardStats();
+
+    for (int i=0; i<height; i++)
+        for (int j=0; j<width; j++)
+        {
+            int val = getXYval(i,j);
+            printf("Val: %d", val);
+        }
+    printf("\n");
+    return;
 }
 
 char* MinesweepGameboard::getDifficulty()
@@ -124,7 +143,7 @@ char* MinesweepGameboard::getDifficulty()
 
 main(){
     char level;
-    int thisX=0, thisY=0, thisMines=0;
+    unsigned short thisX=0, thisY=0, thisMines=0;
     DIFFICULTY thisDifficulty;
 
 
