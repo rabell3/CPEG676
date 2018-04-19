@@ -27,7 +27,7 @@ class MinesweepGameboard
         void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
         unsigned short getWidth(unsigned short x) { return width; }
         unsigned short getHeight(unsigned short y) { return height; }
-//        cellStatus getXYval(unsigned short x, unsigned short y);
+        unsigned short getXYval(unsigned short x, unsigned short y);
         void printGameboard();
         void printGameboardStats();
         char* getDifficulty();
@@ -120,31 +120,33 @@ void MinesweepGameboard::createGameboard(unsigned short inwidth, unsigned short 
 void MinesweepGameboard::printGameboardStats()
 {
     printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", width, height, cMines, getDifficulty());
-    printf("gameArray is: %d bytes\n",sizeof(*gameArray));
+    printf("Gameboard is: %d bytes\n",sizeof(*this));
 }
 void MinesweepGameboard::printGameboard()
 {
     printGameboardStats();
-
+    printf("\n-------------------------------------------");
     for (int i=0; i<height; i++)
     {
+        printf("|");
         for (int j=0; j<width; j++)
         {
-//            int val = getXYval(i,j);
-//            printf("Val: %d", val);
-            printf("Hello!\t");
+            int val = getXYval(i,j);
+            printf("%d", val);
+            printf("|");
         }
+    printf("\n-------------------------------------------");
     printf("\n");
     }
     return;
 }
 
-/*
-cellStatus MinesweepGameboard::getXYval(unsigned short x, unsigned short y)
-{ 
-    return { x, y, isOpen(), isFlagged(), hasMine(), getNeighbors() };
+
+unsigned short MinesweepGameboard::getXYval(unsigned short x, unsigned short y)
+{
+    return gameArray[x][y];
+//    return { x, y, isOpen(), isFlagged(), hasMine(), getNeighbors() };
 }
-*/
 
 bool MinesweepGameboard::isOpen()
 {
