@@ -133,7 +133,7 @@ void MinesweepGameboard::printGameboard()
         printf("|");
         for (int j=0; j<width; j++)
         {
-//            Cell cellVal = getCell(i,j);
+            Cell cellVal = getCell(i,j);
 //            printf("%d", cellVal);
             printf("|");
         }
@@ -145,8 +145,9 @@ void MinesweepGameboard::printGameboard()
 
 bool MinesweepGameboard::hasMine(unsigned short x, unsigned short y)
 {   // Determine if cell has Mine
-    Cell result = getCell(x,y);
-    if (result.hasMine = true) {
+    Cell myCell = gameArray[x][y];
+//    Cell result = getCell(x,y);
+    if (myCell.hasMine = true) {
         return true;
     }
     else return false;
@@ -154,8 +155,9 @@ bool MinesweepGameboard::hasMine(unsigned short x, unsigned short y)
 
 bool MinesweepGameboard::isOpen(unsigned short x, unsigned short y)
 {   // Determine if cell has been opened
-    Cell result = getCell(x,y);
-    if (result.isOpened = true) {
+    Cell myCell = gameArray[x][y];
+//    Cell result = getCell(x,y);
+    if (myCell.isOpened == true) {
         return true;
     }
     else return false;
@@ -163,16 +165,23 @@ bool MinesweepGameboard::isOpen(unsigned short x, unsigned short y)
 
 void MinesweepGameboard::toggleFlag(unsigned short x, unsigned short y)
 {   // Toggle cell open status
+    Cell myCell = gameArray[x][y];
+    if ( myCell.hasFlag == true )
+    {
+        myCell.hasFlag = false;
+    }
+/*
     Cell result = getCell(x,y);
     if (result.isOpened = true) {
     }
-
+*/
 }
 
 bool MinesweepGameboard::hasFlag(unsigned short x, unsigned short y)
-{   // Determine if cell has flagg
-    Cell result = getCell(x,y);
-    if (result.hasFlag = true) {
+{   // Determine if cell has flag
+    Cell myCell = gameArray[x][y];
+//    Cell result = getCell(x,y);
+    if (myCell.hasFlag = true) {
         return true;
     }
     else return false;
