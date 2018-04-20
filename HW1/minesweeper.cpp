@@ -31,9 +31,10 @@ class MinesweepGameboard
         void printGameboard();
         void printGameboardStats();
         char* getDifficulty();
-        bool isOpen();
-        bool isFlagged();
-        bool hasMine();
+        bool isOpen(unsigned short x, unsigned short y);
+        void toggleFlag(unsigned short x, unsigned short y);
+        bool hasFlag(unsigned short x, unsigned short y);
+        bool hasMine(unsigned short x, unsigned short y);
         int getNeighbors();
 
     private:
@@ -44,7 +45,7 @@ class MinesweepGameboard
         unsigned short width;
         unsigned short height;
         unsigned short cMines;
-        int gameArray[0][0];
+        Cell gameArray[0][0];
 };
 
 // Constructor
@@ -132,8 +133,8 @@ void MinesweepGameboard::printGameboard()
         printf("|");
         for (int j=0; j<width; j++)
         {
-            Cell cellVal = getCell(i,j);
-            printf("%d", cellVal);
+//            Cell cellVal = getCell(i,j);
+//            printf("%d", cellVal);
             printf("|");
         }
     printf("\n-------------------------------------------");
@@ -142,22 +143,51 @@ void MinesweepGameboard::printGameboard()
     return;
 }
 
+bool MinesweepGameboard::hasMine(unsigned short x, unsigned short y)
+{   // Determine if cell has Mine
+    Cell result = getCell(x,y);
+    if (result.hasMine = true) {
+        return true;
+    }
+    else return false;
+}
+
+bool MinesweepGameboard::isOpen(unsigned short x, unsigned short y)
+{   // Determine if cell has been opened
+    Cell result = getCell(x,y);
+    if (result.isOpened = true) {
+        return true;
+    }
+    else return false;
+}
+
+void MinesweepGameboard::toggleFlag(unsigned short x, unsigned short y)
+{   // Toggle cell open status
+    Cell result = getCell(x,y);
+    if (result.isOpened = true) {
+    }
+
+}
+
+bool MinesweepGameboard::hasFlag(unsigned short x, unsigned short y)
+{   // Determine if cell has flagg
+    Cell result = getCell(x,y);
+    if (result.hasFlag = true) {
+        return true;
+    }
+    else return false;
+}
 
 Cell MinesweepGameboard::getCell(unsigned short x, unsigned short y)
-{
+{   // Get Cell data
 //    return gameArray[x][y];
 //    return { x, y, isOpen(), isFlagged(), hasMine(), getNeighbors() };
     Cell rtnCell;
-    rtnCell.hasFlag = this->isFlagged;
-    rtnCell.hasMine = this->hasMine;
-    rtnCell.isOpened = this->isOpen;
-    rtnCell.neighborMines = this->getNeighbors();
+    rtnCell.hasFlag = this->hasFlag(x,y);
+    rtnCell.hasMine = this->hasMine(x,y);
+    rtnCell.isOpened = this->isOpen(x,y);
+//    rtnCell.neighborMines = this->getNeighbors();
     return rtnCell;
-}
-
-bool MinesweepGameboard::isOpen()
-{
-    return true;
 }
 
 char* MinesweepGameboard::getDifficulty()
