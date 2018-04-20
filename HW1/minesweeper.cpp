@@ -8,10 +8,10 @@
 using namespace std;
 
 enum DIFFICULTY { Easy, Medium, Hard };
-struct cellStatus
+struct Cell
 {
-    unsigned short xCoord;
-    unsigned short yCoord;
+    //unsigned short xCoord;
+    //unsigned short yCoord;
     bool isOpened = false;
     bool hasFlag = false;
     bool hasMine = false;
@@ -27,7 +27,7 @@ class MinesweepGameboard
         void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
         unsigned short getWidth(unsigned short x) { return width; }
         unsigned short getHeight(unsigned short y) { return height; }
-        unsigned short getXYval(unsigned short x, unsigned short y);
+        Cell getCell(unsigned short x, unsigned short y);
         void printGameboard();
         void printGameboardStats();
         char* getDifficulty();
@@ -39,6 +39,7 @@ class MinesweepGameboard
     private:
 //        void setDimensions(int x, int y);
         unsigned short setMines(DIFFICULTY difficulty);
+        unsigned short setCell(unsigned short x, unsigned short y);
         DIFFICULTY difficulty;
         unsigned short width;
         unsigned short height;
@@ -131,8 +132,8 @@ void MinesweepGameboard::printGameboard()
         printf("|");
         for (int j=0; j<width; j++)
         {
-            int val = getXYval(i,j);
-            printf("%d", val);
+            Cell cellVal = getCell(i,j);
+            printf("%d", cellVal);
             printf("|");
         }
     printf("\n-------------------------------------------");
@@ -142,10 +143,16 @@ void MinesweepGameboard::printGameboard()
 }
 
 
-unsigned short MinesweepGameboard::getXYval(unsigned short x, unsigned short y)
+Cell MinesweepGameboard::getCell(unsigned short x, unsigned short y)
 {
-    return gameArray[x][y];
+//    return gameArray[x][y];
 //    return { x, y, isOpen(), isFlagged(), hasMine(), getNeighbors() };
+    Cell rtnCell;
+    rtnCell.hasFlag = this->isFlagged;
+    rtnCell.hasMine = this->hasMine;
+    rtnCell.isOpened = this->isOpen;
+    rtnCell.neighborMines = this->getNeighbors();
+    return rtnCell;
 }
 
 bool MinesweepGameboard::isOpen()
