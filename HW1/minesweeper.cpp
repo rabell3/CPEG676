@@ -83,17 +83,14 @@ unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
     {
         case Easy:
             // Generate Easy minefield
-            setMap();
             return easyMines;
             break;
         case Medium:
             // Generate Medium minefield
-            setMap();
             return mediumMines;
             break;
         case Hard:
             // Generate Hard minefield
-            setMap();
             return hardMines;
             break;
         default:
@@ -107,14 +104,16 @@ void MinesweepGameboard::setMap()
 {   // Setting mines on the map
     cout << "Setting mines on gameboard...\n";
     srand (time(NULL));
+    Cell myCell;
     int minesSet = 0;
     while (minesSet < cMines) {
         int rand_X = rand() % mapWidth + 0;
         int rand_Y = rand() % mapHeight + 0;
         
-        Cell myCell = gameArray[rand_X][rand_Y];
+        myCell = gameArray[rand_X][rand_Y];
         if (myCell.hasMine == false) { myCell.hasMine = true; }
         minesSet++;
+//        printf("mines: %d\n", minesSet);
 //        printf("%d.%d+", rand_X, rand_Y);
     }
 }
@@ -128,6 +127,7 @@ void MinesweepGameboard::createGameboard(unsigned short width, unsigned short he
 
     unsigned short gameArray[width][height];
     cMines = setMines(difficulty);
+    setMap();
 }
 void MinesweepGameboard::printGameboardStats()
 {
@@ -137,19 +137,28 @@ void MinesweepGameboard::printGameboardStats()
 void MinesweepGameboard::printGameboard()
 {
     printGameboardStats();
-    for (int j=0; j<mapWidth; j++) { printf("-");}
+    for (int j=0; j<mapWidth; j++) { printf(" %d", j);}
+    printf("\n\u2500");
+    for (int j=0; j<2*mapWidth; j++) { printf("\u2500");}
 //    printf("\n-------------------------------------------\n");
     printf("\n");
     for (int i=0; i<mapHeight; i++)
     {
-        printf("|");
+        printf("\u2502");
         for (int j=0; j<mapWidth; j++)
         {
             Cell cellVal = getCell(i,j);
-            printf("%d", int(cellVal.hasMine));
-            printf("|");
+            if (cellVal.hasMine) {
+                printf("*");
+            }
+            else printf(" ");
+//            printf("%d", int(cellVal.hasMine));
+            printf("\u2502");
         }
-    printf("\n-------------------------------------------\n");
+    printf("\n\u2500");
+    for (int j=0; j<2*mapWidth; j++) { printf("\u2500");}
+    printf("\n");
+//    printf("\n-------------------------------------------\n");
     }
     return;
 }
