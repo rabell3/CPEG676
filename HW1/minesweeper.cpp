@@ -8,6 +8,7 @@
 using namespace std;
 
 enum DIFFICULTY { Easy, Medium, Hard };
+//enum mineStatus { mine, empty };
 struct Cell
 {
     //unsigned short xCoord;
@@ -25,8 +26,8 @@ class MinesweepGameboard
         MinesweepGameboard(unsigned short x, unsigned short y, DIFFICULTY level);
         ~MinesweepGameboard();
         void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
-        unsigned short getWidth(unsigned short x) { return width; }
-        unsigned short getHeight(unsigned short y) { return height; }
+        unsigned short getWidth(unsigned short x) { return mapWidth; }
+        unsigned short getHeight(unsigned short y) { return mapHeight; }
         Cell getCell(unsigned short x, unsigned short y);
         void printGameboard();
         void printGameboardStats();
@@ -40,10 +41,10 @@ class MinesweepGameboard
     private:
 //        void setDimensions(int x, int y);
         unsigned short setMines(DIFFICULTY difficulty);
-        unsigned short setCell(unsigned short x, unsigned short y);
+        void setMap();
         DIFFICULTY difficulty;
-        unsigned short width;
-        unsigned short height;
+        unsigned short mapWidth;
+        unsigned short mapHeight;
         unsigned short cMines;
         Cell gameArray[0][0];
 };
@@ -52,8 +53,8 @@ class MinesweepGameboard
 MinesweepGameboard::MinesweepGameboard()
 {
     cout << "Basic Minesweeper object initialized.\n";
-    width = 0;
-    height = 0;
+    mapWidth = 0;
+    mapHeight = 0;
     cMines = 0;
     difficulty = Easy;
 }
@@ -71,14 +72,6 @@ MinesweepGameboard::~MinesweepGameboard()
     cout << "Minesweeper object deleted.\n";
 }
 
-/*
-void MinesweepGameboard::setDimensions(int x, int y)
-{
-    cout << "Setting dimensions of gameboard...\n";
-    width = x;
-    height = y;
-}
-*/
 unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
 {
     srand (time(NULL));
@@ -89,12 +82,18 @@ unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
     switch (difficulty)
     {
         case Easy:
+            // Generate Easy minefield
+            setMap();
             return easyMines;
             break;
         case Medium:
+            // Generate Medium minefield
+            setMap();
             return mediumMines;
             break;
         case Hard:
+            // Generate Hard minefield
+            setMap();
             return hardMines;
             break;
         default:
@@ -104,41 +103,53 @@ unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
     }
 }
 
-void MinesweepGameboard::createGameboard(unsigned short inwidth, unsigned short inheight, DIFFICULTY inlevel)
+void MinesweepGameboard::setMap()
+{   // Setting mines on the map
+    cout << "Setting mines on gameboard...\n";
+    srand (time(NULL));
+    int minesSet = 0;
+    while (minesSet < cMines) {
+        int rand_X = rand() % mapWidth + 0;
+        int rand_Y = rand() % mapHeight + 0;
+        
+        Cell myCell = gameArray[rand_X][rand_Y];
+        if (myCell.hasMine == false) { myCell.hasMine = true; }
+        minesSet++;
+//        printf("%d.%d+", rand_X, rand_Y);
+    }
+}
+
+void MinesweepGameboard::createGameboard(unsigned short width, unsigned short height, DIFFICULTY indifficulty)
 {
     cout << "Gameboard created.\n";
-    width = inwidth;
-    height = inheight;
-    difficulty = inlevel;
-    cMines = setMines(difficulty);
-    unsigned short gameArray[width][height];
+    mapWidth = width;
+    mapHeight = height;
+    difficulty = indifficulty;
 
-    for (int i=0; i<height; i++)
-        for (int j=0; j<width; j++)
-        {
-            gameArray[i][j]=(i+1)*(j+1);
-        }
+    unsigned short gameArray[width][height];
+    cMines = setMines(difficulty);
 }
 void MinesweepGameboard::printGameboardStats()
 {
-    printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", width, height, cMines, getDifficulty());
+    printf("Your gameboard is: %d wide, %d high, with %d mines, an %s gameboard.\n", mapWidth, mapHeight, cMines, getDifficulty());
     printf("Gameboard is: %d bytes\n",sizeof(*this));
 }
 void MinesweepGameboard::printGameboard()
 {
     printGameboardStats();
-    printf("\n-------------------------------------------");
-    for (int i=0; i<height; i++)
+    for (int j=0; j<mapWidth; j++) { printf("-");}
+//    printf("\n-------------------------------------------\n");
+    printf("\n");
+    for (int i=0; i<mapHeight; i++)
     {
         printf("|");
-        for (int j=0; j<width; j++)
+        for (int j=0; j<mapWidth; j++)
         {
             Cell cellVal = getCell(i,j);
-//            printf("%d", cellVal);
+            printf("%d", int(cellVal.hasMine));
             printf("|");
         }
-    printf("\n-------------------------------------------");
-    printf("\n");
+    printf("\n-------------------------------------------\n");
     }
     return;
 }
@@ -147,7 +158,7 @@ bool MinesweepGameboard::hasMine(unsigned short x, unsigned short y)
 {   // Determine if cell has Mine
     Cell myCell = gameArray[x][y];
 //    Cell result = getCell(x,y);
-    if (myCell.hasMine = true) {
+    if (myCell.hasMine == true) {
         return true;
     }
     else return false;
