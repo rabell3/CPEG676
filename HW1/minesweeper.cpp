@@ -37,6 +37,7 @@ class MinesweepGameboard
         bool hasFlag(unsigned short x, unsigned short y);
         bool hasMine(unsigned short x, unsigned short y);
         int getNeighbors();
+        int countMines();
 
     private:
 //        void setDimensions(int x, int y);
@@ -72,6 +73,19 @@ MinesweepGameboard::~MinesweepGameboard()
     cout << "Minesweeper object deleted.\n";
 }
 
+int MinesweepGameboard::countMines()
+{
+    int minecount=0;
+    for (int i=0; i<mapHeight; i++)
+    {
+        for (int j=0; j<mapWidth; j++)
+        {
+            if (hasMine(i,j)) { minecount++; }
+        }
+    }
+    printf("Minecount: %d",minecount);
+    return minecount;
+}
 unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
 {
     srand (time(NULL));
@@ -106,7 +120,7 @@ void MinesweepGameboard::setMap()
     srand (time(NULL));
     Cell myCell;
     int minesSet = 0;
-    while (minesSet < cMines) {
+/*    while (minesSet < cMines) {
         int rand_X = rand() % mapWidth + 0;
         int rand_Y = rand() % mapHeight + 0;
         
@@ -115,7 +129,9 @@ void MinesweepGameboard::setMap()
         minesSet++;
 //        printf("mines: %d\n", minesSet);
 //        printf("%d.%d+", rand_X, rand_Y);
-    }
+    }*/
+    myCell = gameArray[2][2];
+    myCell.hasMine = true;
 }
 
 void MinesweepGameboard::createGameboard(unsigned short width, unsigned short height, DIFFICULTY indifficulty)
@@ -278,6 +294,7 @@ main(){
     }
     MinesweepGameboard msGame(thisX, thisY, thisDifficulty);
     msGame.printGameboard();
+    int blah = msGame.countMines();
 //    endwin(); // Disabled for now.
     return 0;
 }
