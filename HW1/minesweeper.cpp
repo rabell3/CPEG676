@@ -36,7 +36,7 @@ class MinesweepGameboard
 
     private:
         unsigned short setMines();
-        void setField(int mines);
+        void setField(bool clearit);
         DIFFICULTY difficulty;
         unsigned short mapWidth;
         unsigned short mapHeight;
@@ -47,7 +47,7 @@ class MinesweepGameboard
 // Constructor
 MinesweepGameboard::MinesweepGameboard()
 {
-    cout << "Basic Minesweeper object initialized.\n";
+    printf("Basic Minesweeper object initialized.\n");
     mapWidth = 0;
     mapHeight = 0;
     cMines = 0;
@@ -108,14 +108,14 @@ unsigned short MinesweepGameboard::setMines()
     }
 }
 
-void MinesweepGameboard::setField(int inMines)
+void MinesweepGameboard::setField(bool clearit)
 {   // Setting mines on the map
     cout << "Setting mines on gameboard...\n";
     srand (time(NULL));
     Cell myCell;
     int minesSet = 0;
 
-    if (inMines == 0) {
+    if (clearit) {
         for (int i=0; i<mapHeight; i++)
         {
             for (int j=0; j<mapWidth; j++)
@@ -144,15 +144,17 @@ void MinesweepGameboard::setField(int inMines)
 }
 
 void MinesweepGameboard::createGameboard(unsigned short width, unsigned short height, DIFFICULTY indifficulty)
-{
+{   
+    bool clearIt = true;
     cout << "Gameboard created.\n";
     mapWidth = width;
     mapHeight = height;
     difficulty = indifficulty;
 
-    unsigned short mineArray[width][height];
+    Cell mineArray[width][height];
+    printf("new size: %d\n", sizeof(mineArray));
     cMines = setMines();
-    setField(0); // clear old mines first
+    setField(clearIt); // clear old mines first
 //    setField(setMines(difficulty));
 }
 void MinesweepGameboard::printGameboardStats()
