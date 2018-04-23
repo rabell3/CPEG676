@@ -3,16 +3,12 @@
 #include <stdlib.h>
 #include <string>
 #include <time.h>
-#include <curses.h>
 
 using namespace std;
 
 enum DIFFICULTY { Easy, Medium, Hard };
-//enum mineStatus { mine, empty };
 struct Cell
 {
-    //unsigned short xCoord;
-    //unsigned short yCoord;
     bool isOpened = false;
     bool hasFlag = false;
     bool hasMine = false;
@@ -26,12 +22,11 @@ class MinesweepGameboard
         MinesweepGameboard(unsigned short x, unsigned short y, DIFFICULTY level);
         ~MinesweepGameboard();
         void createGameboard(unsigned short x, unsigned short y, DIFFICULTY level);  // should meet requirement 1
-        unsigned short getWidth(unsigned short x) { return mapWidth; }
-        unsigned short getHeight(unsigned short y) { return mapHeight; }
+//        unsigned short getWidth(unsigned short x) { return mapWidth; }
+//        unsigned short getHeight(unsigned short y) { return mapHeight; }
         Cell getCell(unsigned short x, unsigned short y);
         void printGameboard();
         void printGameboardStats();
-//        char* getDifficulty();
         bool isOpen(unsigned short x, unsigned short y);
         void toggleFlag(unsigned short x, unsigned short y);
         bool hasFlag(unsigned short x, unsigned short y);
@@ -40,9 +35,8 @@ class MinesweepGameboard
         int countMines();
 
     private:
-//        void setDimensions(int x, int y);
-        unsigned short setMines(DIFFICULTY difficulty);
-        void setMap();
+        unsigned short setMines();
+        void setField(int mines);
         DIFFICULTY difficulty;
         unsigned short mapWidth;
         unsigned short mapHeight;
@@ -86,7 +80,7 @@ int MinesweepGameboard::countMines()
     printf("Minecount: %d\n",minecount);
     return minecount;
 }
-unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
+unsigned short MinesweepGameboard::setMines()
 {
     srand (time(NULL));
     unsigned short easyMines = rand() % 10 + 1;
@@ -114,24 +108,39 @@ unsigned short MinesweepGameboard::setMines(DIFFICULTY difficulty)
     }
 }
 
-void MinesweepGameboard::setMap()
+void MinesweepGameboard::setField(int inMines)
 {   // Setting mines on the map
     cout << "Setting mines on gameboard...\n";
     srand (time(NULL));
     Cell myCell;
     int minesSet = 0;
-/*    while (minesSet < cMines) {
-        int rand_X = rand() % mapWidth + 0;
-        int rand_Y = rand() % mapHeight + 0;
-        
-        myCell = mineArray[rand_X][rand_Y];
-        if (myCell.hasMine == false) { myCell.hasMine = true; }
-        minesSet++;
-//        printf("mines: %d\n", minesSet);
-//        printf("%d.%d+", rand_X, rand_Y);
-    }*/
-    myCell = mineArray[2][2];
-    myCell.hasMine = true;
+
+    if (inMines == 0) {
+        for (int i=0; i<mapHeight; i++)
+        {
+            for (int j=0; j<mapWidth; j++)
+            {
+                if (hasMine(i,j)) {
+                    myCell = mineArray[i][j];
+                    myCell.hasMine = false;
+                }
+            }
+        }
+    }
+    else {
+        while (minesSet < cMines) {
+            int rand_X = rand() % mapWidth + 0;
+            int rand_Y = rand() % mapHeight + 0;
+            
+            myCell = mineArray[rand_X][rand_Y];
+            if (myCell.hasMine == false) { myCell.hasMine = true; }
+            minesSet++;
+            printf("mines: %d\n", minesSet);
+//            printf("%d.%d+", rand_X, rand_Y);
+        }
+    }
+//    myCell = mineArray[2][2];
+//    myCell.hasMine = true;
 }
 
 void MinesweepGameboard::createGameboard(unsigned short width, unsigned short height, DIFFICULTY indifficulty)
@@ -142,8 +151,9 @@ void MinesweepGameboard::createGameboard(unsigned short width, unsigned short he
     difficulty = indifficulty;
 
     unsigned short mineArray[width][height];
-    cMines = setMines(difficulty);
-    setMap();
+    cMines = setMines();
+    setField(0); // clear old mines first
+//    setField(setMines(difficulty));
 }
 void MinesweepGameboard::printGameboardStats()
 {
@@ -208,11 +218,6 @@ void MinesweepGameboard::toggleFlag(unsigned short x, unsigned short y)
     {
         myCell.hasFlag = false;
     }
-/*
-    Cell result = getCell(x,y);
-    if (result.isOpened = true) {
-    }
-*/
 }
 
 bool MinesweepGameboard::hasFlag(unsigned short x, unsigned short y)
@@ -237,30 +242,7 @@ Cell MinesweepGameboard::getCell(unsigned short x, unsigned short y)
     return rtnCell;
 }
 
-/*
-char* MinesweepGameboard::getDifficulty()
-{
-    switch (difficulty)
-    {
-        case Easy:
-            return "Easy";
-            break;
-        case Medium:
-            return "Medium";
-            break;
-        case Hard:
-            return "Hard";
-            break;
-        default:
-            // This shouldn't happen
-            return "broke";
-            break;
-    }
-}
-*/
-
 main(){
-//    initscr();  // Disabled for now
     char level;
     unsigned short thisX=0, thisY=0, thisMines=0;
     DIFFICULTY thisDifficulty;
@@ -298,7 +280,5 @@ main(){
     }
     MinesweepGameboard msGame(thisX, thisY, thisDifficulty);
     msGame.printGameboard();
-    int blah = msGame.countMines();
-//    endwin(); // Disabled for now.
     return 0;
 }
