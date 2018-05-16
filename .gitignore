@@ -1,6 +1,7 @@
 .vscode
 *prof*
 *student*
+rose-reports*
 settings.json
 .pylintrc
 a.out
