@@ -9,5 +9,4 @@ gee-mail: src/main.o
 main.o: src/main.cpp
 	$(CC) -c src/main.cpp
 
-clean: 
-	rm src/*.o gee-mail
+clean: rm *.o gee-mail

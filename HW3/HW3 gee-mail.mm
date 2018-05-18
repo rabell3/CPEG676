@@ -1,0 +1,13 @@
+<map version="1.1.0">
+<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
+<node CREATED="1526601144334" ID="ID_603516294" MODIFIED="1526601155250" TEXT="HW3: gee-mail">
+<node CREATED="1526601173685" HGAP="13" ID="ID_1363182149" MODIFIED="1526602335153" POSITION="right" TEXT="Create / manage database" VSHIFT="-52">
+<node CREATED="1526601554026" ID="ID_797552923" MODIFIED="1526601600090" TEXT="create new DB"/>
+</node>
+<node CREATED="1526601186544" HGAP="11" ID="ID_756366393" MODIFIED="1526602341354" POSITION="left" TEXT="Create / manage users" VSHIFT="-49">
+<node CREATED="1526601296425" ID="ID_1913695652" MODIFIED="1526601319792" TEXT="password HASH storage"/>
+</node>
+<node CREATED="1526601222792" HGAP="15" ID="ID_1597489038" MODIFIED="1526602354210" POSITION="right" TEXT="Authenticate users" VSHIFT="15"/>
+<node CREATED="1526601237252" HGAP="19" ID="ID_337770822" MODIFIED="1526602345850" POSITION="left" TEXT="Send / Receive messages" VSHIFT="14"/>
+</node>
+</map>
