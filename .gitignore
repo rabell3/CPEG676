@@ -5,6 +5,8 @@ rose-reports*
 settings.json
 .pylintrc
 a.out
+*.db
+*.o
 *.bin
 *.pdf
 *.png

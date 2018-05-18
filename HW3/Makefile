@@ -1,12 +1,16 @@
 CC = g++
-OPTS = -lsqlite3 -O
+OPTS = -std=c++11 -lsqlite3 -O
 
-all: gee-mail
+all: db.o main.o gee-mail.bin
 
-gee-mail: src/main.o
-	$(CC) src/main.o $(OPTS) -o gee-mail
+db.o: src/db.cpp
+	$(CC) -c src/db.cpp -o src/db.o
 
 main.o: src/main.cpp
-	$(CC) -c src/main.cpp
+	$(CC) -c src/main.cpp -o src/main.o
 
-clean: rm *.o gee-mail
+gee-mail.bin: src/main.o
+	$(CC) src/main.o src/db.o $(OPTS) -o gee-mail.bin
+
+clean: 
+	rm src/*.o gee-mail.bin
