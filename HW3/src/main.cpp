@@ -18,8 +18,8 @@ void printMenu(){
 
 int main(){
   sqlite3 *db;  // database handle
-  if (initDB(db) != 0) {
-    printf("Error initilizing database...\n");
+  if (openDB(db) != 0) {
+    fprintf(stderr, "Error initilizing database...\n");
     return 1;
   }
 
@@ -28,6 +28,7 @@ int main(){
 
   while (running) {
     printMenu();
+    cout << " -> ";
     cin >> choice;
     switch (choice)
     {
