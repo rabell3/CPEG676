@@ -24,11 +24,15 @@ const int getUser(string &userName){
     return userName;
   }
 */
-  if (userIn.find(illegalChars)) {
+  cout << "name length: " << userIn.size() << endl;
+  for (unsigned int i=0; i <= illegalChars.size(); i++) {
+      cout << illegalChars[i] << endl;
+/*      if (userIn.find(illegalChars[i])) {
       cout << "junkchars\n";
       return 0;
-  } else {
-    userName = userIn;
-    return 1;
+        } else {
+            userName = userIn;
+            return 1;
+        }*/
   }
 }
