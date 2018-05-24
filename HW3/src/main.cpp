@@ -30,18 +30,23 @@ int main(){
     printMenu();
     cout << " -> ";
     cin >> choice;
+    if (std::cin.fail()) {
+      std::cerr << "Please make a valid choice." << std::endl;
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
     switch (choice)
     {
       case 1:  // login
         {
           string loginname;
           int tryCount=1;
-          while ((loginname != "INVALID") && (tryCount <3)) {
-            loginname=getUser();
-            printf("try: %d\t", tryCount);
-            tryCount++;
+          while ((getUser(loginname)) && (tryCount <3)) {
+            //loginname=getUser();
+            printf("try: %d\t %s", tryCount, loginname.c_str());
+            tryCount+=1;
           };
-          printf("hello, %s\n", loginname.c_str());
+          cout << "hello, " << loginname << endl;
         }
         break;
       case 2:  // list email

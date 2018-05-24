@@ -1,8 +1,8 @@
 #include "user.h"
 using namespace std;
 
-const string getUser(){
-  string userIn, userName;
+const int getUser(string &userName){
+  string userIn;
   string illegalChars = "\\/:?\"<>|";
   
   printf("Enter username: ");
@@ -15,7 +15,7 @@ const string getUser(){
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 */
-
+/*
   bool found = (userIn.find(illegalChars));
   if (found==string::npos) {
       return "INVALID";
@@ -23,11 +23,12 @@ const string getUser(){
     userName = userIn;
     return userName;
   }
-/*
+*/
   if (userIn.find(illegalChars)) {
-      return "INVALID";
+      cout << "junkchars\n";
+      return 0;
   } else {
     userName = userIn;
-    return userName;
-  }*/
+    return 1;
+  }
 }
