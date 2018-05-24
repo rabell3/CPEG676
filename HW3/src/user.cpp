@@ -19,7 +19,7 @@ const string getUser(){
   bool found = (userIn.find(illegalChars));
   if (found==string::npos) {
       return "INVALID";
-  }  {
+  } else {
     userName = userIn;
     return userName;
   }
