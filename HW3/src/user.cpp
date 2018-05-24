@@ -24,9 +24,9 @@ const int getUser(string &userName){
     return userName;
   }
 */
-  cout << "name length: " << userIn.size() << endl;
+//  cout << "name length: " << userIn.size() << endl;
   for (unsigned int i=0; i <= illegalChars.size(); i++) {
-      cout << illegalChars[i] << endl;
+//      cout << illegalChars[i] << endl;
 /*      if (userIn.find(illegalChars[i])) {
       cout << "junkchars\n";
       return 0;
@@ -35,4 +35,6 @@ const int getUser(string &userName){
             return 1;
         }*/
   }
+  userName = userIn;
+  return 1;
 }

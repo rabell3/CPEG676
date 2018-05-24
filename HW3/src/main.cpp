@@ -41,9 +41,9 @@ int main(){
         {
           string loginname;
           int tryCount=1;
-          while ((getUser(loginname)) && (tryCount <3)) {
+          while ((tryCount <3) || !getUser(loginname)) {
             //loginname=getUser();
-            printf("try: %d\t %s", tryCount, loginname.c_str());
+//            printf("try: %d\t %s", tryCount, loginname.c_str());
             tryCount+=1;
           };
           cout << "hello, " << loginname << endl;
