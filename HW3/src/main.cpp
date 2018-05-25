@@ -6,14 +6,18 @@
 
 using namespace std;
 
-void printMenu(){
-  cout << "----------------------------\n";
-  cout << " 1.  Login to system        \n";
-  cout << " 2.  List email             \n";
-  cout << " 3.  Read email             \n";
-  cout << " 4.  Write email            \n";
-  cout << " 5.  Exit from system       \n";
-  cout << "----------------------------\n";
+void printMenu(const std::string inName){
+//  unsigned short lline = loginname.size();
+  cout << std::string(60,'-') << endl;  // top bar
+  cout << "| Logged in as: " << inName << std::string(60-(17+inName.size()),' ') << "|" << endl;
+  cout << "|" << std::string(58,' ') << "|" << endl;
+  cout << "| 1.  Login to system " << inName << std::string(60-(23+inName.size()),' ') << "|" << endl;
+  cout << "| 2.  List email " << inName << std::string(60-(18+inName.size()),' ') << "|" << endl;
+  cout << "| 3.  Read email " << inName << std::string(60-(18+inName.size()),' ') << "|" << endl;
+  cout << "| 4.  Write email " << inName << std::string(60-(19+inName.size()),' ') << "|" << endl;
+  cout << "| 5.  Exit from system " << inName << std::string(60-(24+inName.size()),' ') << "|" << endl;
+  cout << "|" << std::string(58,' ') << "|" << endl;
+  cout << std::string(60,'-') << endl;  // bottom bar
 }
 
 int main(){
@@ -27,7 +31,8 @@ int main(){
   bool running = true;
 
   while (running) {
-    printMenu();
+    string loginname="";
+    printMenu(loginname);
     cout << " -> ";
     cin >> choice;
     if (std::cin.fail()) {
@@ -39,13 +44,14 @@ int main(){
     {
       case 1:  // login
         {
-          string loginname;
           unsigned short rc=0, tryCount=0;
           do {
             tryCount++;
             rc=getUser(loginname);
           } while ((tryCount <3) && rc==0);
-          if (rc==1) {cout << "hello, " << loginname << endl;} 
+          if (rc==1) {
+            cout << "hello, " << loginname << endl;
+          } 
           else { cout << "Please enter a valid login name.\n";}
         }
         break;
