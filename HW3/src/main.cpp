@@ -11,17 +11,18 @@ void printMenu(const std::string inName){
   cout << std::string(60,'-') << endl;  // top bar
   cout << "| Logged in as: " << inName << std::string(60-(17+inName.size()),' ') << "|" << endl;
   cout << "|" << std::string(58,' ') << "|" << endl;
-  cout << "| 1.  Login to system " << inName << std::string(60-(23+inName.size()),' ') << "|" << endl;
-  cout << "| 2.  List email " << inName << std::string(60-(18+inName.size()),' ') << "|" << endl;
-  cout << "| 3.  Read email " << inName << std::string(60-(18+inName.size()),' ') << "|" << endl;
-  cout << "| 4.  Write email " << inName << std::string(60-(19+inName.size()),' ') << "|" << endl;
-  cout << "| 5.  Exit from system " << inName << std::string(60-(24+inName.size()),' ') << "|" << endl;
+  cout << "| 1.  Login to system " << std::string((60-23),' ') << "|" << endl;
+  cout << "| 2.  List email " << std::string((60-18),' ') << "|" << endl;
+  cout << "| 3.  Read email " << std::string((60-18),' ') << "|" << endl;
+  cout << "| 4.  Write email " << std::string((60-19),' ') << "|" << endl;
+  cout << "| 5.  Exit from system " << std::string((60-24),' ') << "|" << endl;
   cout << "|" << std::string(58,' ') << "|" << endl;
   cout << std::string(60,'-') << endl;  // bottom bar
 }
 
 int main(){
   sqlite3 *db;  // database handle
+  string loginname="";
   if (openDB(db) != 0) {
     fprintf(stderr, "Error initilizing database...\n");
     return 1;
@@ -31,7 +32,6 @@ int main(){
   bool running = true;
 
   while (running) {
-    string loginname="";
     printMenu(loginname);
     cout << " -> ";
     cin >> choice;

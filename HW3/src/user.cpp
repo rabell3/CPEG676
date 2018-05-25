@@ -1,5 +1,5 @@
-#include "user.h"
 #include <cstring>
+#include "user.h"
 
 using namespace std;
 
