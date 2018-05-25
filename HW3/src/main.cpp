@@ -40,13 +40,13 @@ int main(){
       case 1:  // login
         {
           string loginname;
-          int tryCount=1;
-          while ((tryCount <3) || !getUser(loginname)) {
-            //loginname=getUser();
-//            printf("try: %d\t %s", tryCount, loginname.c_str());
-            tryCount+=1;
-          };
-          cout << "hello, " << loginname << endl;
+          unsigned short rc=0, tryCount=0;
+          do {
+            tryCount++;
+            rc=getUser(loginname);
+          } while ((tryCount <3) && rc==0);
+          if (rc==1) {cout << "hello, " << loginname << endl;} 
+          else { cout << "Please enter a valid login name.\n";}
         }
         break;
       case 2:  // list email

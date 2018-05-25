@@ -1,40 +1,27 @@
 #include "user.h"
+#include <cstring>
+
 using namespace std;
 
 const int getUser(string &userName){
-  string userIn;
-  string illegalChars = "\\/:?\"<>|";
+  string userIn, illegalChars = ".\\/:;{}[]`~,?\"<>|";
   
   printf("Enter username: ");
   cin >> userIn;
-
-/*
   if (std::cin.fail()) {
-    std::cerr << "Sorry, I cannot read that. Please try again." << std::endl;
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cerr << "Please make a valid choice." << std::endl;
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
-*/
-/*
-  bool found = (userIn.find(illegalChars));
-  if (found==string::npos) {
-      return "INVALID";
-  } else {
-    userName = userIn;
-    return userName;
-  }
-*/
-//  cout << "name length: " << userIn.size() << endl;
-  for (unsigned int i=0; i <= illegalChars.size(); i++) {
-//      cout << illegalChars[i] << endl;
-/*      if (userIn.find(illegalChars[i])) {
-      cout << "junkchars\n";
+
+  size_t valid_len = strcspn(userIn.c_str(), illegalChars.c_str());
+    if(valid_len != userIn.size()) {
+      std::cout << "You entered invalid chars starting at position "
+        << valid_len << '\n';
+      std::cin.clear();
       return 0;
-        } else {
-            userName = userIn;
-            return 1;
-        }*/
-  }
-  userName = userIn;
-  return 1;
+    } else {
+      userName = userIn;
+      return 1;
+    }
 }
