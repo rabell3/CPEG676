@@ -56,6 +56,7 @@ int main(){
         }
         break;
       case 2:  // list email
+        getMessages(db, loginname);
         break;
       case 3:  // read email
         break;

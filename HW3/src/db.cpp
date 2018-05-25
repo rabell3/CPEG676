@@ -79,5 +79,17 @@ int openDB(sqlite3 *db){
 }
 
 int getMessages(sqlite3 *db, const string userIn){
-  string db_query1="select * from messages where ;";
+  string db_query1="select * from messages where recipient = '" + userIn + "';";
+
+  char *zErrMsg = 0;
+  int rc;
+
+  //rc = sqlite3_exec(db, argv[2], callback, 0, &zErrMsg);
+  rc = sqlite3_exec(db, db_query1.c_str(), callback, 0, &zErrMsg);
+  if( rc!=SQLITE_OK ){
+    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+    sqlite3_free(zErrMsg);
+  }
+  if (zErrMsg == 0) {return 0;}
+    else return 1;
 }
