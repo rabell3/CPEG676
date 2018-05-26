@@ -4,4 +4,5 @@
 #include <limits>
 
 const int getUser(std::string &userName);
-int authenticateUser();
+//std::string authenticateUser();
+const int authenticateUser(std::string &authUser);

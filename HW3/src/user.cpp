@@ -1,18 +1,18 @@
-#include <cstring>
-#include "user.h"
+#include <string>
 #include <crypto++/sha.h>
+#include <crypto++/blowfish.h>
 #include <crypto++/filters.h>
 #include <crypto++/hex.h>
+#include "user.h"
+#include "db.h"
 
-
-using namespace std;
 using namespace CryptoPP;
 
-const int getUser(string &userName){
-  string userIn, illegalChars = ".\\/:;{}[]`~,?\"<>|";
+const int getUser(std::string &userName){
+  std::string userIn, illegalChars = ".\\/:;{}[]`~,?\"<>|";
   
-  cout << "Enter username: ";
-  cin >> userIn;
+  std::cout << "Enter username: ";
+  std::cin >> userIn;
   if (std::cin.fail()) {
       std::cerr << "Please make a valid choice." << std::endl;
       std::cin.clear();
@@ -20,7 +20,7 @@ const int getUser(string &userName){
   }
 
   if (userIn.size() >= 40) { 
-      cout << "Please try again.\n";
+      std::cout << "Please try again.\n";
       return 0;
     }
 
@@ -36,25 +36,34 @@ const int getUser(string &userName){
     }
 }
 
-int authenticateUser(){
-  string authUser="";
+const int pwHashGet(sqlite3 *db, const std::string authUser, const std::string authUserHash){
+  return 1;
+}
+
+const int authenticateUser(std::string &authUser){
+  authUser="";
   int rcU=getUser(authUser);
+
+  if (rcU == 1){
   SHA256 userHash;
-  string authPassHash="";
-  string authPass="";
-  cout << "Enter password: ";
-  cin >> authPass;
-  string authDigest;
-StringSource ss( authPass, true /* PumpAll */,
+  std::string authPassHash="";
+  std::string authPass="";
+  std::cout << "Enter password: ";
+  std::cin >> authPass;
+  std::string authHash;
+  StringSource ss( authPass, true /* PumpAll */,
                  new HashFilter( userHash, 
                    new HexEncoder( 
-                     new StringSink( authDigest )
+                     new StringSink( authHash )
                    ) // HexEncoder
                  ) // HashFilter
-              ); // StringSource
+              ); // stringSource
 
-  cout << "authPass " << authPass << endl;
-  cout << "authPassHash " << authDigest << endl;
+  std::cout << "authPass " << authPass << std::endl;
+  std::cout << "authPassHash " << authHash << std::endl;
+
+  std::string pwHashGet;
   
   return 1;
+  } else return 0;
 }

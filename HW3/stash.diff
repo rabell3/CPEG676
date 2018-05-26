@@ -1,0 +1,184 @@
+diff --git a/.gitignore b/.gitignore
+index 05917e3..b907450 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -13,3 +13,4 @@ a.out
+ *.jpg
+ *.txt
+ *.odt
++*stash*
+\ No newline at end of file
+diff --git a/HW3/Makefile b/HW3/Makefile
+index 167c0d9..c0fbdfd 100644
+--- a/HW3/Makefile
++++ b/HW3/Makefile
+@@ -4,13 +4,13 @@ OPTS = -std=c++11 -lsqlite3 -lcrypto++ -O
+ all: db.o user.o main.o gee-mail.bin
+ 
+ db.o: src/db.cpp
+-	$(CC) -c src/db.cpp -o src/db.o
++	$(CC) $(OPTS) -c src/db.cpp -o src/db.o
+ 
+ user.o: src/user.cpp
+-	$(CC) -c src/user.cpp -o src/user.o
++	$(CC) $(OPTS) -c src/user.cpp -o src/user.o
+ 
+ main.o: src/main.cpp
+-	$(CC) -c src/main.cpp -o src/main.o
++	$(CC) $(OPTS) -c src/main.cpp -o src/main.o
+ 
+ gee-mail.bin: src/main.o
+ 	$(CC) src/main.o src/db.o src/user.o $(OPTS) -o gee-mail.bin
+diff --git a/HW3/src/db.cpp b/HW3/src/db.cpp
+index 351afb8..7d2192a 100644
+--- a/HW3/src/db.cpp
++++ b/HW3/src/db.cpp
+@@ -1,10 +1,50 @@
+ #include <stdio.h>
+ #include <string>
+ #include <iostream>
+-#include <sqlite3.h>
++//#include <sqlite3.h>
++#include "db.h"
+ 
+ using namespace std;
+ 
++
++int select_callback(void *p_data, int num_fields, char **p_fields, char **p_col_names)
++{
++  Records* records = static_cast<Records*>(p_data);
++  try {
++    records->emplace_back(p_fields, p_fields + num_fields);
++  }
++  catch (...) {
++    // abort select on failure, don't let exception propogate thru sqlite3 call-stack
++    return 1;
++  }
++  return 0;
++}
++
++Records select_stmt(sqlite3 *db, const string stmt)
++{
++  Records records;  
++  char *errmsg=0;
++  int ret = sqlite3_exec(db, stmt.c_str(), select_callback, &records, &errmsg);
++  if (ret != SQLITE_OK) {
++    std::cerr << "Error in select statement " << stmt << "[" << errmsg << "]\n";
++  }
++  else {
++    std::cerr << records.size() << " records returned.\n";
++  }
++
++  return records;
++}
++int sql_stmt(sqlite3 *db, const string stmt)
++{
++  char *errmsg=0;
++  int ret = sqlite3_exec(db, stmt.c_str(), 0, 0, &errmsg);
++  if (ret != SQLITE_OK) {
++    std::cerr << "Error in statement " << stmt << "[" << errmsg << "]\n";
++    return 0;
++  }
++  return 1;
++}
++
+ int callback(void *NotUsed, int argc, char **argv, char **azColName){
+   int i;
+   for(i=0; i<argc; i++){
+@@ -16,37 +56,21 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName){
+ 
+ int initDB(sqlite3 *db){
+   cout << "Initializing database...\n";
+-  string db_query1="create table user (id integer primary key not null, name text, pwhash text);"; // include a guid field later when we get basic functionality working.
+-  string db_query2="create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);";
+-  string db_query3="insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');";
+-  string db_query4="insert into user (name, pwhash) values ('robert', 'robert');";
++  std::array<std::string, 4> inits { 
++    "create table user (id integer primary key not null, name text, pwhash text);", \
++    "create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);", \
++    "insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');", \
++    "insert into user (name, pwhash) values ('robert', 'robert');"
++  };
+ 
+   char *zErrMsg = 0;
+-  int rc;
++  int rc=0;
+ 
+-  //rc = sqlite3_exec(db, argv[2], callback, 0, &zErrMsg);
+-  rc = sqlite3_exec(db, db_query1.c_str(), callback, 0, &zErrMsg);
+-  if( rc!=SQLITE_OK ){
+-    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+-    sqlite3_free(zErrMsg);
++  for (auto& init : inits){
++    rc=sql_stmt(db, init.c_str());
+   }
+-  rc = sqlite3_exec(db, db_query2.c_str(), callback, 0, &zErrMsg);
+-  if( rc!=SQLITE_OK ){
+-    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+-    sqlite3_free(zErrMsg);
+-  }
+-  rc = sqlite3_exec(db, db_query3.c_str(), callback, 0, &zErrMsg);
+-  if( rc!=SQLITE_OK ){
+-    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+-    sqlite3_free(zErrMsg);
+-  }
+-  rc = sqlite3_exec(db, db_query4.c_str(), callback, 0, &zErrMsg);
+-  if( rc!=SQLITE_OK ){
+-    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+-    sqlite3_free(zErrMsg);
+-  }
+-  if (zErrMsg == 0) {return 0;}
+-    else return 1;
++
++  if (rc=0) {return 0;} else return 1;
+ }
+ 
+ int openDB(sqlite3 *db){
+@@ -79,8 +103,22 @@ int openDB(sqlite3 *db){
+ }
+ 
+ int getMessages(sqlite3 *db, const string userIn){
+-  string db_query1="select * from messages where recipient = '" + userIn + "';";
++  string db_query="select * from messages where recipient = '" + userIn + "';";
++  Records messages;
++  cout << "user: " << userIn << " qu: " << db_query << endl;
++
++  messages = select_stmt(db, db_query.c_str());
++
++  cout << messages << endl;
++  if (1) {
++    cout << "messages found\n";
++    return 1;
++  } else {
++    cout << "no messages\n";
++    return 0;
++  }
+ 
++/*
+   char *zErrMsg = 0;
+   int rc;
+ 
+@@ -92,4 +130,5 @@ int getMessages(sqlite3 *db, const string userIn){
+   }
+   if (zErrMsg == 0) {return 0;}
+     else return 1;
++  */
+ }
+\ No newline at end of file
+diff --git a/HW3/src/db.h b/HW3/src/db.h
+index 4c264e8..043ab9b 100644
+--- a/HW3/src/db.h
++++ b/HW3/src/db.h
+@@ -1,5 +1,12 @@
++#include <array>
++#include <vector>
+ #include <sqlite3.h>
+ 
++// Found this: https://stackoverflow.com/a/18840064
++using Record = std::vector<std::string>;
++using Records = std::vector<Record>;
++
++Records select_stmt(sqlite3 *db, const char* stmt);
+ int callback(void *NotUsed, int argc, char **argv, char **azColName);
+ int initDB(sqlite3 *db);
+ int openDB(sqlite3 *db);

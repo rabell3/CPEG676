@@ -44,10 +44,12 @@ int main(){
     {
       case 1:  // login
         {
+          //loginname = authenticateUser();
           unsigned short rc=0, tryCount=0;
           do {
             tryCount++;
-            rc=getUser(loginname);
+            //rc=getUser(loginname);
+            rc=authenticateUser(loginname);
           } while ((tryCount <3) && rc==0);
           if (rc==1) {
             cout << "hello, " << loginname << endl;
@@ -59,7 +61,7 @@ int main(){
         getMessages(db, loginname);
         break;
       case 3:  // read email
-        authenticateUser();
+        
         break;
       case 4:  // write email
         break;

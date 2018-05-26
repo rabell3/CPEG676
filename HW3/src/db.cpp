@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include <array>
 #include <sqlite3.h>
 
-using namespace std;
+//using namespace std;
 
 int callback(void *NotUsed, int argc, char **argv, char **azColName){
   int i;
@@ -14,15 +15,42 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName){
   return 0;
 }
 
+int sql_stmt(sqlite3 *db, const std::string stmt)
+{
+  char *errmsg=0;
+  int ret = sqlite3_exec(db, stmt.c_str(), 0, 0, &errmsg);
+  if (ret != SQLITE_OK) {
+    std::cerr << "Error in statement " << stmt << "[" << errmsg << "]\n";
+    return 0;
+  }
+  return 1;
+}
+
 int initDB(sqlite3 *db){
-  cout << "Initializing database...\n";
-  string db_query1="create table user (id integer primary key not null, name text, pwhash text);"; // include a guid field later when we get basic functionality working.
-  string db_query2="create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);";
-  string db_query3="insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');";
-  string db_query4="insert into user (name, pwhash) values ('robert', 'robert');";
+  int rc;
+  std::cout << "Initializing database...\n";
+
+  std::array<std::string, 4> inits { 
+    "create table user (id integer primary key not null, name text, pwhash text);", \
+    "create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);", \
+    "insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');", \
+    "insert into user (name, pwhash) values ('robert', 'robert');"
+  };
+
+  for (auto& init : inits){
+    rc=sql_stmt(db, init.c_str());
+  }
+
+  if (rc=0) {return 0;} else return 1;
+
+/*
+  std::string db_query1="create table user (id integer primary key not null, name text, pwhash text);"; // include a guid field later when we get basic functionality working.
+  std::string db_query2="create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);";
+  std::string db_query3="insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');";
+  std::string db_query4="insert into user (name, pwhash) values ('robert', 'robert');";
 
   char *zErrMsg = 0;
-  int rc;
+
 
   //rc = sqlite3_exec(db, argv[2], callback, 0, &zErrMsg);
   rc = sqlite3_exec(db, db_query1.c_str(), callback, 0, &zErrMsg);
@@ -47,11 +75,12 @@ int initDB(sqlite3 *db){
   }
   if (zErrMsg == 0) {return 0;}
     else return 1;
+    */
 }
 
 int openDB(sqlite3 *db){
-  string db_check="SELECT name FROM sqlite_master WHERE type='table' AND name='user';";
-  string dbname="geemail.db";
+  std::string db_check="SELECT name FROM sqlite_master WHERE type='table' AND name='user';";
+  std::string dbname="geemail.db";
   char *zErrMsg = 0;
   int rc;
 
@@ -78,8 +107,8 @@ int openDB(sqlite3 *db){
     else return 1;
 }
 
-int getMessages(sqlite3 *db, const string userIn){
-  string db_query1="select * from messages where recipient = '" + userIn + "';";
+int getMessages(sqlite3 *db, const std::string userIn){
+  std::string db_query1="select * from messages where recipient = '" + userIn + "';";
 
   char *zErrMsg = 0;
   int rc;
