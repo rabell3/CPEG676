@@ -1,5 +1,5 @@
 CC = g++
-OPTS = -std=c++11 -lsqlite3 -O
+OPTS = -std=c++11 -lsqlite3 -lcrypto++ -O
 
 all: db.o user.o main.o gee-mail.bin
 

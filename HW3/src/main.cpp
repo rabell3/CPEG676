@@ -59,6 +59,7 @@ int main(){
         getMessages(db, loginname);
         break;
       case 3:  // read email
+        authenticateUser();
         break;
       case 4:  // write email
         break;
