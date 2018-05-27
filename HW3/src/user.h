@@ -5,4 +5,4 @@
 
 const int getUser(std::string &userName);
 //std::string authenticateUser();
-const int authenticateUser(std::string &authUser);
+const int authenticateUser(sqlite3 *db, std::string &authUser);

@@ -3,6 +3,7 @@
 #include <crypto++/blowfish.h>
 #include <crypto++/filters.h>
 #include <crypto++/hex.h>
+#include <sqlite3.h>
 #include "user.h"
 #include "db.h"
 
@@ -40,9 +41,10 @@ const int pwHashGet(sqlite3 *db, const std::string authUser, const std::string a
   return 1;
 }
 
-const int authenticateUser(std::string &authUser){
+const int authenticateUser(sqlite3 *db, std::string &authUser){
   authUser="";
-  int rcU=getUser(authUser);
+  int rcU=0, rcP=0;
+  rcU=getUser(authUser); 
 
   if (rcU == 1){
   SHA256 userHash;
@@ -62,8 +64,10 @@ const int authenticateUser(std::string &authUser){
   std::cout << "authPass " << authPass << std::endl;
   std::cout << "authPassHash " << authHash << std::endl;
 
-  std::string pwHashGet;
-  
+//  std::string pwHashSQL="insert into user (name, pwhash) values ('robert', 'robert');";
+  std::string pwHashSQL="insert into user (name, pwhash) values ('" + authUser + "', '" + authHash + "');";
+  rcP=sql_stmt(db, pwHashSQL);
+
   return 1;
   } else return 0;
 }

@@ -49,7 +49,7 @@ int main(){
           do {
             tryCount++;
             //rc=getUser(loginname);
-            rc=authenticateUser(loginname);
+            rc=authenticateUser(db, loginname);
           } while ((tryCount <3) && rc==0);
           if (rc==1) {
             cout << "hello, " << loginname << endl;
