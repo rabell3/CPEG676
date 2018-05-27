@@ -71,3 +71,22 @@ const int authenticateUser(sqlite3 *db, std::string &authUser){
   return 1;
   } else return 0;
 }
+
+const int writeEmail(sqlite3 *db, std::string sender){
+  std::string recipient;
+  int rc=getUser(recipient);
+  // The below section not really ready yet.
+
+  if (userExists(db, recipient) != 1) {
+    std::cout << "User does not exist. Please try again.\n";
+  }
+
+
+}
+
+encryptMessage(){
+
+}
+decryptMessage(){
+  
+}

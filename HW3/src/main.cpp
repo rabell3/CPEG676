@@ -22,8 +22,9 @@ void printMenu(const std::string inName){
 
 int main(){
   sqlite3 *db;  // database handle
+  std::string dbname="geemail.db";
   string loginname="";
-  if (openDB(db) != 0) {
+  if (openDB(db, dbname) != 0) {
     fprintf(stderr, "Error initilizing database...\n");
     return 1;
   }
@@ -61,19 +62,19 @@ int main(){
         getMessages(db, loginname);
         break;
       case 3:  // read email
-        
         break;
       case 4:  // write email
         break;
       case 5:  // exit
         running = false;
         break;
+      case 6:  // dbperfs, hidden option, segfaults
+        getDBperfs(db);
+        break;
       default: // didn't match anything else
         break;
     }
   };
-
-
 
   sqlite3_close(db);
   return 0;

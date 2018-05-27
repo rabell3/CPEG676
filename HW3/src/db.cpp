@@ -20,7 +20,10 @@ int sql_stmt(sqlite3 *db, const std::string stmt){
   int rc;
   sqlite3_stmt *checkStmt;
   std::cout << "Q: " << stmt << std::endl;
-  sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL);
+//  sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL);
+  if (sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL) != SQLITE_OK) {
+           std::cout << "Prepare failure: " << sqlite3_errmsg(db) << std::endl;
+       }
   if ( sqlite3_step(checkStmt) != SQLITE_ROW ){
       std::cout << "hello\n";
   }
@@ -55,9 +58,11 @@ int initDB(sqlite3 *db){
   int rc;
   std::cout << "Initializing database...\n";
 
-  std::array<std::string, 3> inits { 
+  std::array<std::string, 5> inits {     // <------- Make sure to change this value when adding/deleting from this init list
     "create table user (id integer primary key not null, name text, pwhash text);", \
     "create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);", \
+    "create index i1 on user (id, name)", \
+    "create index i2 on messages (id, sender, recipient)", \
     "insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');"
   };
 
@@ -68,14 +73,13 @@ int initDB(sqlite3 *db){
   if (rc=0) {return 0;} else return 1;
 }
 
-int openDB(sqlite3 *db){
+int openDB(sqlite3 *db, const std::string dbname){
   std::string db_check="SELECT name FROM sqlite_master WHERE type='table' AND name='user';";
-  std::string dbname="geemail.db";
   char *zErrMsg = 0;
   int rc;
 
   rc = sqlite3_open(dbname.c_str(), &db);
-  if( rc ){
+  if( rc != SQLITE_OK ){
     fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
     sqlite3_close(db);
     return(1);
@@ -86,7 +90,8 @@ int openDB(sqlite3 *db){
   if ( sqlite3_step(checkStmt) != SQLITE_ROW ) {    // sqlite3_step either returns a row of data (or not) depending on table existence
       initDB(db);
   }
-  sqlite3_finalize(checkStmt);
+
+    sqlite3_finalize(checkStmt);
 
   if( rc!=SQLITE_OK ){
     fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -111,4 +116,21 @@ int getMessages(sqlite3 *db, const std::string userIn){
   }
   if (zErrMsg == 0) {return 0;}
     else return 1;
+}
+
+int userExists(sqlite3 *db, const std::string recipent){
+  // Not Ready. Code to check if user exists...
+  /*
+  if (zErrMsg == 0) {return 0;}
+    else return 1;
+  */
+}
+
+void getDBperfs(sqlite3 *db){
+    int *pCur, *pHiwtr, resetFlg;
+    int rc =sqlite3_db_status(db, 3, pCur, pHiwtr, resetFlg);
+    if (rc == SQLITE_OK) {
+      std::cout <<"STMT Used: " << pCur << std::endl;
+      std::cout <<"STMT Hiwtr: " << pHiwtr << std::endl;
+    } else {std::cout <<"Err: " << std::endl;};
 }
