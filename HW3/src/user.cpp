@@ -37,23 +37,20 @@ const int getUser(std::string &userName){
     }
 }
 
-const int pwHashGet(sqlite3 *db, const std::string authUser, const std::string authUserHash){
+const int checkPass(sqlite3 *db, const std::string authUser, const std::string authUserHash){
   return 1;
 }
 
-const int authenticateUser(sqlite3 *db, std::string &authUser){
-  authUser="";
-  int rcU=0, rcP=0;
-  rcU=getUser(authUser); 
-
-  if (rcU == 1){
-  SHA256 userHash;
+const int setPass(sqlite3 *db, std::string &authUser){
+  int rcP=0;
+  SHA256 userHash, userSalt;
   std::string authPassHash="";
   std::string authPass="";
   std::cout << "Enter password: ";
   std::cin >> authPass;
-  std::string authHash;
-  StringSource ss( authPass, true /* PumpAll */,
+  srand((unsigned) time(0));
+  std::string authHash, hashSalt="CpEG676-"+std::to_string(rand());  // Need to fix this
+  StringSource ss( (authPass+hashSalt), true /* PumpAll */,
                  new HashFilter( userHash, 
                    new HexEncoder( 
                      new StringSink( authHash )
@@ -63,10 +60,22 @@ const int authenticateUser(sqlite3 *db, std::string &authUser){
 
   std::cout << "authPass " << authPass << std::endl;
   std::cout << "authPassHash " << authHash << std::endl;
+  std::cout << "authHashSalt " << hashSalt << std::endl;
 
-//  std::string pwHashSQL="insert into user (name, pwhash) values ('robert', 'robert');";
-  std::string pwHashSQL="insert into user (name, pwhash) values ('" + authUser + "', '" + authHash + "');";
+  std::string pwHashSQL="insert into user (name, pwhash, pwsalt) values ('" + authUser + "', '" + authHash + "', '" + hashSalt + "');";
   rcP=sql_stmt(db, pwHashSQL);
+  if (rcP == 1){
+    std::cout << "Password updated.\n";
+    return 1;
+  } else return 0;
+}
+
+const int authenticateUser(sqlite3 *db, std::string &authUser){
+  authUser="";
+  int rcU=0, rcP=0;
+  rcU=getUser(authUser); 
+
+  if (rcU == 1){
 
   return 1;
   } else return 0;
@@ -83,10 +92,11 @@ const int writeEmail(sqlite3 *db, std::string sender){
 
 
 }
-
+/*    // Still to come
 encryptMessage(){
 
 }
 decryptMessage(){
   
 }
+*/

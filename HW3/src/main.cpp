@@ -24,11 +24,14 @@ int main(){
   sqlite3 *db;  // database handle
   std::string dbname="geemail.db";
   string loginname="";
-  if (openDB(db, dbname) != 0) {
-    fprintf(stderr, "Error initilizing database...\n");
+  int rc=openDB(db, dbname);
+  if (rc != 0) {
+    cout << "rc: " << rc << endl;
+    fprintf(stderr, "Error initializing database...\n");
     return 1;
   }
-
+  cout << "rc: " << rc << endl;
+//  if (db != NULL) {cout << "Wow lucky\n";} else { cout << "you're fucked\n";};
   int choice = 0;
   bool running = true;
 
@@ -59,9 +62,11 @@ int main(){
         }
         break;
       case 2:  // list email
+        if (db != NULL) {cout << "Wow lucky\n";} else { cout << "you're still fucked\n";};
         getMessages(db, loginname);
         break;
       case 3:  // read email
+        setPass(db, loginname);
         break;
       case 4:  // write email
         break;

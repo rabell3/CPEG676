@@ -20,6 +20,8 @@ int sql_stmt(sqlite3 *db, const std::string stmt){
   int rc;
   sqlite3_stmt *checkStmt;
   std::cout << "Q: " << stmt << std::endl;
+//  if (db != NULL) {std::cout << "Wow lucky\n";} else { sqlite3_open("geemail.db", &db);};
+
 //  sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL);
   if (sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL) != SQLITE_OK) {
            std::cout << "Prepare failure: " << sqlite3_errmsg(db) << std::endl;
@@ -59,7 +61,7 @@ int initDB(sqlite3 *db){
   std::cout << "Initializing database...\n";
 
   std::array<std::string, 5> inits {     // <------- Make sure to change this value when adding/deleting from this init list
-    "create table user (id integer primary key not null, name text, pwhash text);", \
+    "create table user (id integer primary key not null, name text, pwhash text, pwsalt text);", \
     "create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);", \
     "create index i1 on user (id, name)", \
     "create index i2 on messages (id, sender, recipient)", \
@@ -80,6 +82,7 @@ int openDB(sqlite3 *db, const std::string dbname){
 
   rc = sqlite3_open(dbname.c_str(), &db);
   if( rc != SQLITE_OK ){
+    std::cout << "rc: " << rc << std::endl;
     fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
     sqlite3_close(db);
     return(1);
@@ -128,6 +131,7 @@ int userExists(sqlite3 *db, const std::string recipent){
 
 void getDBperfs(sqlite3 *db){
     int *pCur, *pHiwtr, resetFlg;
+    if (db != NULL) {std::cout << "Wow lucky\n";} else { sqlite3_open("geemail.db", &db);};
     int rc =sqlite3_db_status(db, 3, pCur, pHiwtr, resetFlg);
     if (rc == SQLITE_OK) {
       std::cout <<"STMT Used: " << pCur << std::endl;
