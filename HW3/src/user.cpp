@@ -47,7 +47,8 @@ const int setPass(sqlite3 *db, std::string &authUser){
   std::string authPassHash="";
   std::string authPass="";
   std::cout << "Enter password: ";
-  std::cin >> authPass;
+  std::cin >> authPass;   // There's probably a better way to grab user input, but I'v been unsucessful in implementing
+
   srand((unsigned) time(0));
   std::string authHash, hashSalt="CpEG676-"+std::to_string(rand());  // Need to fix this
   StringSource ss( (authPass+hashSalt), true /* PumpAll */,
@@ -57,7 +58,7 @@ const int setPass(sqlite3 *db, std::string &authUser){
                    ) // HexEncoder
                  ) // HashFilter
               ); // stringSource
-
+  
   std::cout << "authPass " << authPass << std::endl;
   std::cout << "authPassHash " << authHash << std::endl;
   std::cout << "authHashSalt " << hashSalt << std::endl;
@@ -76,6 +77,8 @@ const int authenticateUser(sqlite3 *db, std::string &authUser){
   rcU=getUser(authUser); 
 
   if (rcU == 1){
+  std::string userSQL="select name, pwhash, pwsalt from user where name = ('" + authUser + "');";
+  rcP=sql_stmt(db, userSQL);
 
   return 1;
   } else return 0;

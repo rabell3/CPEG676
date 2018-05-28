@@ -19,19 +19,19 @@ int sql_stmt(sqlite3 *db, const std::string stmt){
   char *zErrMsg = 0;
   int rc;
   sqlite3_stmt *checkStmt;
-  std::cout << "Q: " << stmt << std::endl;
-//  if (db != NULL) {std::cout << "Wow lucky\n";} else { sqlite3_open("geemail.db", &db);};
+//  std::cout << "Q: " << stmt << std::endl;   // Debug code
+  if (db == NULL) { sqlite3_open("geemail.db", &db);};
 
 //  sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL);
   if (sqlite3_prepare_v2(db, stmt.c_str(), stmt.size(), &checkStmt, NULL) != SQLITE_OK) {
            std::cout << "Prepare failure: " << sqlite3_errmsg(db) << std::endl;
        }
   if ( sqlite3_step(checkStmt) != SQLITE_ROW ){
-      std::cout << "hello\n";
+      std::cout << "More...\n";
   }
   if (checkStmt == NULL) { std::cout << "shit\n";};
   sqlite3_finalize(checkStmt);
-  std::cout << "ret: " << rc << std::endl;
+//  std::cout << "ret: " << rc << std::endl;   // Debug code
 
   if( rc!=SQLITE_OK ){
     fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -40,9 +40,6 @@ int sql_stmt(sqlite3 *db, const std::string stmt){
 
   if (zErrMsg == 0) {return 0;}
     else return 1;
-
-
-
 
 /*
 
@@ -65,7 +62,7 @@ int initDB(sqlite3 *db){
     "create table messages (id integer primary key not null, subject text, sender text, recipient text, body text);", \
     "create index i1 on user (id, name)", \
     "create index i2 on messages (id, sender, recipient)", \
-    "insert into user (name, pwhash) values ('administrator', 's00p3rS3CR37');"
+    "insert into user (name, pwhash, pwsalt) values ('administrator', 'B95C7787CBD4B9FA4F83A9D2554F57B5E389F06365F4772EE1CB516A5EA23433','CpEG676-482539739');"
   };
 
   for (auto& init : inits){
